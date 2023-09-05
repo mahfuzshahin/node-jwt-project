@@ -3,6 +3,7 @@ require("./config/database").connect();
 
 const express = require("express");
 const User = require("./model/user")
+const Product = require("./model/product")
 const app = express();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -34,7 +35,6 @@ app.post("/register", async (req,res)=>{
                     }
                 );
         user.token = token;
-        console.log()
         res.status(201).json(user);
     }catch (err){
         console.log(err)
@@ -69,5 +69,6 @@ app.post("/login", async (req,res)=>{
 app.get("/welcome", auth, (req, res) => {
     res.status(200).json({message:"Welcome 🙌 "});
 });
+
 
 module.exports = app;

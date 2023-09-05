@@ -1,5 +1,6 @@
 const http = require("http")
 const app = require("./app")
+const product = require("./product")
 const server = http.createServer(app);
 
 const {API_PORT} = process.env;
