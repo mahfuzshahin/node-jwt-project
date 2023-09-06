@@ -29,6 +29,25 @@ product.post("/product", auth, async (req, res)=>{
     }catch (err){
         console.log(err)
     }
+});
+
+product.get("/product", auth, async (req, res)=>{
+    Product.find().then((err, products)=>{
+        if(err){
+            res.send(err);
+        }
+        res.status(201).json(products)
+    })
+});
+product.get("/product/:productID", auth, (req, res)=>{
+    Product.findOne({_id: req.params.productID}).then((err, product)=>{
+        if(err){
+            res.json(err);
+        }else {
+            res.status(201).json()
+        }
+    })
 })
+
 
 module.exports = product
