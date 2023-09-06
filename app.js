@@ -3,13 +3,13 @@ require("./config/database").connect();
 
 const express = require("express");
 const User = require("./model/user")
-const Product = require("./model/product")
+const product = require("./product")
 const app = express();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("./middleware/auth")
 app.use(express.json());
-
+app.use(product);
 app.post("/register", async (req,res)=>{
     try {
         const {first_name, last_name, email, password} = req.body;
@@ -58,6 +58,7 @@ app.post("/login", async (req,res)=>{
 
             );
             user.token = token;
+            console.log(user._id)
             res.status(200).json(user);
         }
         res.status(400).json({message: "Invalid Credentials"})
