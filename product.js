@@ -36,18 +36,40 @@ product.get("/product", auth, async (req, res)=>{
         if(err){
             res.send(err);
         }
-        res.status(201).json(products)
+        res.json(products)
     })
 });
-product.get("/product/:productID", auth, (req, res)=>{
-    Product.findOne({_id: req.params.productID}).then((err, product)=>{
-        if(err){
-            res.json(err);
-        }else {
-            res.status(201).json()
-        }
-    })
-})
+product.get("/product/:productID", auth, async (req, res)=>{
 
+    try {
+        const product = await Product.findById(req.params.productID).populate('user_id');
+
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        const productName = product.name || 'No Name';
+        const productPrice = product.price || 0; // Use a suitable default price
+        const addedBy = product.user_id ? product.user_id.first_name : 'Unknown User';
+
+        res.json({ name: productName, price: productPrice, addedBy: addedBy });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+    // Product.findById(req.params.productID).populate('user_id').then((product)=>{
+    //     if(!product){
+    //         res.status(404).json({ error: 'Product not found' });
+    //     }else {
+    //         const productName = product.name;
+    //         const productPrice = product.price;
+    //         const addedBy = product.user_id.first_name;
+    //         res.json({name: productName, price: productPrice, addedBy: addedBy})
+    //     }
+    // }).catch((err) => {
+    //     res.status(500).json(err);
+    // });
+})
 
 module.exports = product

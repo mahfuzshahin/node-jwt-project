@@ -55,13 +55,12 @@ app.post("/login", async (req,res)=>{
                 {
                     expiresIn: "2h",
                 }
-
             );
             user.token = token;
-            console.log(user._id)
             res.status(200).json(user);
+        }else{
+            res.status(400).json({message: "Invalid Credentials"})
         }
-        res.status(400).json({message: "Invalid Credentials"})
 
     }catch (err){
         console.log(err)
