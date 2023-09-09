@@ -1,11 +1,34 @@
 const express = require("express");
 const Product = require("./model/product");
+const Category = require("./model/category")
 const auth = require("./middleware/auth")
 const jwt = require("jsonwebtoken");
 const User = require("./model/user");
 const bcrypt = require("bcryptjs");
 const product = express()
 product.use(express.json());
+
+product.post("/category", auth, async (req, res)=>{
+    try {
+        const {name, type} = req.body;
+        if(!(name && type)){
+            res.status(400).json({message: "Required"});
+        }
+
+        const user = req.user.user_id;
+        const category = await Category.create({
+            name, type, user_id:user
+        }).then((err, category)=>{
+            if(err){
+                res.send(err);
+            }else {
+                res.status(200).json(category);
+            }
+        });
+    }catch (err){
+        console.log(err)
+    }
+});
 product.post("/product", auth, async (req, res)=>{
     try {
         const {name, price, description} = req.body;
@@ -50,9 +73,10 @@ product.get("/product/:productID", auth, async (req, res)=>{
 
         const productName = product.name || 'No Name';
         const productPrice = product.price || 0; // Use a suitable default price
-        const addedBy = product.user_id ? product.user_id.first_name : 'Unknown User';
+        const name = product.user_id ? product.user_id.first_name+' '+product.user_id.last_name : 'Unknown User';
+        const email = product.user_id.email;
 
-        res.json({ name: productName, price: productPrice, addedBy: addedBy });
+        res.json({ name: productName, price: productPrice, data: {name: name, email:email} });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
