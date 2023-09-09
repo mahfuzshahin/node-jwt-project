@@ -5,5 +5,6 @@ const productSchema = new mongoose.Schema({
     price:{type: Number, default: null},
     description:{type: String, default: null},
     user_id:{type: mongoose.Schema.Types.ObjectId, ref: 'user'},
+    category_id:{type: mongoose.Schema.Types.ObjectId, ref: 'category'},
 });
 module.exports = mongoose.model("products", productSchema)
