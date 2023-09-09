@@ -9,6 +9,7 @@ const app = express();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("./middleware/auth")
+const Product = require("./model/product");
 app.use(express.json());
 app.use(product);
 app.post("/register", async (req,res)=>{
@@ -106,9 +107,30 @@ app.post("/login", async (req,res)=>{
 app.get("/welcome", auth, (req, res) => {
     res.status(200).json({message:"Welcome 🙌 "});
 });
-app.get("/student/stRoll", auth, async (req, res)=>{
-
+app.get("/students", auth, async (req, res)=>{
+    Student.find().populate('user_id').then((err, students)=>{
+        if(err){
+            res.send(err);
+        }
+        res.json(students)
+    })
 })
+
+app.get("/student/:studentID", auth, async (req, res)=>{
+    try {
+        const student = await Student.findById(req.params.studentID).populate(['user_id']);
+
+        if (!student) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+        // const student_name = student.user_id.first_name;
+        res.json(student);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({error: 'Internal server error'});
+    }
+})
+
 
 
 
