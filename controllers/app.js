@@ -1,15 +1,15 @@
 require("dotenv").config();
-require("./config/database").connect();
+require("/config/database").connect();
 
 const express = require("express");
-const User = require("./model/user")
-const Student = require("./model/student")
-const product = require("./product")
+const User = require("/model/user")
+const Student = require("/model/student")
+const product = require("/controllers/product")
 const app = express();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const auth = require("./middleware/auth")
-const Product = require("./model/product");
+const auth = require("/middleware/auth")
+
 app.use(express.json());
 app.use(product);
 app.post("/register", async (req,res)=>{
@@ -133,5 +133,4 @@ app.get("/student/:studentID", auth, async (req, res)=>{
 
 
 
-
-module.exports = app;
+module.exports = app

@@ -1,10 +1,7 @@
 const express = require("express");
-const Product = require("./model/product");
-const Category = require("./model/category")
-const auth = require("./middleware/auth")
-const jwt = require("jsonwebtoken");
-const User = require("./model/user");
-const bcrypt = require("bcryptjs");
+const Product = require("/model/product");
+const Category = require("/model/category")
+const auth = require("/middleware/auth")
 const product = express()
 product.use(express.json());
 
@@ -16,7 +13,7 @@ product.post("/category", auth, async (req, res)=>{
         }
 
         const user = req.user.user_id;
-        const category = await Category.create({
+        await Category.create({
             name, type, user_id:user
         }).then((err, category)=>{
             if(err){
@@ -25,6 +22,7 @@ product.post("/category", auth, async (req, res)=>{
                 res.status(200).json(category);
             }
         });
+        console.log(user)
     }catch (err){
         console.log(err)
     }
@@ -105,4 +103,4 @@ product.get("/product/:productID", auth, async (req, res)=>{
     // });
 })
 
-module.exports = product
+module.exports = product;
