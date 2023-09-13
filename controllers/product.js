@@ -1,7 +1,7 @@
 const express = require("express");
-const Product = require("/model/product");
-const Category = require("/model/category")
-const auth = require("/middleware/auth")
+const Product = require("../model/product");
+const Category = require("../model/category")
+const auth = require("../middleware/auth")
 const product = express()
 product.use(express.json());
 

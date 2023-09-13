@@ -1,6 +1,6 @@
 const http = require("http");
 const app = require("./controllers/app");
-
+const cors = require("cors");
 const server = http.createServer(app);
 
 const {API_PORT} = process.env;

@@ -1,16 +1,17 @@
 require("dotenv").config();
-require("/config/database").connect();
-
+require("../config/database").connect();
+const cors = require("cors");
 const express = require("express");
-const User = require("/model/user")
-const Student = require("/model/student")
-const product = require("/controllers/product")
+const User = require("../model/user")
+const Student = require("../model/student")
+const product = require("../controllers/product")
 const app = express();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const auth = require("/middleware/auth")
+const auth = require("../middleware/auth")
 
 app.use(express.json());
+app.use(cors())
 app.use(product);
 app.post("/register", async (req,res)=>{
     try {
@@ -81,6 +82,7 @@ app.post("/student", async (req,res)=>{
 
 app.post("/login", async (req,res)=>{
     try{
+
         const {email, password} = req.body;
         if(!(email && password)){
             res.status(400).json({message: "All input is required"})
@@ -103,6 +105,16 @@ app.post("/login", async (req,res)=>{
     }catch (err){
         console.log(err)
     }
+});
+app.get("/profile", auth, async (req, res) => {
+    const user = req.user.user_id;
+    const logged_user = await User.findById(user);
+    const first_name = logged_user.first_name;
+    const last_name = logged_user.last_name;
+    res.json({data: {
+            first_name: first_name,
+            last_name: last_name,
+        }});
 });
 app.get("/welcome", auth, (req, res) => {
     res.status(200).json({message:"Welcome 🙌 "});
