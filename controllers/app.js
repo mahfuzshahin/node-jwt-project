@@ -114,7 +114,22 @@ app.get("/profile", auth, async (req, res) => {
     res.json({data: {
             first_name: first_name,
             last_name: last_name,
+            email: logged_user.email,
         }});
+});
+app.put("/logout", auth, (req, res) => {
+    console.log(req.headers)
+    const authHeader = req.headers["x-access-token"];
+    jwt.sign(authHeader, {"x-access-token":""}, {expiresIn: 1}, (logout, err)=>{
+        if (logout){
+            res.send({msg : 'You have been Logged Out' });
+            console.log(authHeader)
+        }else {
+            res.send({msg:'Error'});
+        }
+    });
+    // console.log(authHeader)
+    // res.json(authHeader)
 });
 app.get("/welcome", auth, (req, res) => {
     res.status(200).json({message:"Welcome 🙌 "});
