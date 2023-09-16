@@ -9,7 +9,7 @@ const app = express();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth")
-
+const tokenBlacklist = new Set();
 app.use(express.json());
 app.use(cors())
 app.use(product);
@@ -117,20 +117,19 @@ app.get("/profile", auth, async (req, res) => {
             email: logged_user.email,
         }});
 });
-app.put("/logout", auth, (req, res) => {
-    console.log(req.headers)
+app.post("/logout", auth, (req, res) => {
+
     const authHeader = req.headers["x-access-token"];
-    jwt.sign(authHeader, {"x-access-token":""}, {expiresIn: 1}, (logout, err)=>{
+
+    jwt.sign(authHeader, "", {expiresIn: 1}, (logout, err)=>{
         if (logout){
             res.send({msg : 'You have been Logged Out' });
-            console.log(authHeader)
         }else {
             res.send({msg:'Error'});
         }
     });
-    // console.log(authHeader)
-    // res.json(authHeader)
 });
+
 app.get("/welcome", auth, (req, res) => {
     res.status(200).json({message:"Welcome 🙌 "});
 });

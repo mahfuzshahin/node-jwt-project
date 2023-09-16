@@ -61,6 +61,28 @@ product.get("/product", auth, async (req, res)=>{
         res.json(products)
     })
 });
+
+product.put("/product/:productID", auth, async(req, res)=>{
+    await Product.findOneAndUpdate({_id: req.params.productID},
+        {
+            $set: {
+                description: req.body.description,
+                name: req.body.name,
+                price: req.body.price,
+            },
+        }, {new: true}).then(
+        (err, Product)=>{
+            if(err){
+                res.send(err);
+                // res.status(400).json({message: "False"});
+                console.log("error")
+            }else {
+                res.status(200).json(Product);
+
+            }
+        }
+    )
+});
 product.get("/product/:productID", auth, async (req, res)=>{
 
     try {
@@ -88,19 +110,12 @@ product.get("/product/:productID", auth, async (req, res)=>{
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
     }
-
-    // Product.findById(req.params.productID).populate('user_id').then((product)=>{
-    //     if(!product){
-    //         res.status(404).json({ error: 'Product not found' });
-    //     }else {
-    //         const productName = product.name;
-    //         const productPrice = product.price;
-    //         const addedBy = product.user_id.first_name;
-    //         res.json({name: productName, price: productPrice, addedBy: addedBy})
-    //     }
-    // }).catch((err) => {
-    //     res.status(500).json(err);
-    // });
 })
+product.delete("/product/:productID", auth, (req, res)=>{
+    Product.deleteOne({_id: req.params.productID})
+        .then(()=>res.json({message: "Product Deleted"}))
+        .catch((err)=>res.send(err));
+
+});
 
 module.exports = product;
