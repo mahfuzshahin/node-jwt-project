@@ -117,11 +117,11 @@ app.get("/profile", auth, async (req, res) => {
             email: logged_user.email,
         }});
 });
-app.post("/logout", auth, (req, res) => {
+app.post("/logout", auth,async  (req, res) => {
 
     const authHeader = req.headers["x-access-token"];
 
-    jwt.sign(authHeader, "", {expiresIn: 1}, (logout, err)=>{
+    jwt.sign(authHeader, "", {expiresIn: 60}, (logout, err)=>{
         if (logout){
             res.send({msg : 'You have been Logged Out' });
         }else {
